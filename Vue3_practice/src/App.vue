@@ -1,16 +1,18 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView, useRouter } from 'vue-router'
+
+const router = useRouter();
 </script>
 
 <template>
   <header>
-    <div class="wrapper">
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <br />
-        <RouterLink to="/design">Design</RouterLink>
+        <div>
+          <button @click="router.push('/')">Home</button>
+          <button @click="router.push('/design')">Design</button>
+          <hr />
+        </div>
       </nav>
-    </div>
   </header>
 
   <RouterView />

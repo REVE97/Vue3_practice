@@ -5,11 +5,10 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
   <header>
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <br />
+        <RouterLink to="/design">Design</RouterLink>
       </nav>
     </div>
   </header>
@@ -18,5 +17,8 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped>
-
+/* 밑줄 제거 */
+a {
+  text-decoration: none;
+}
 </style>

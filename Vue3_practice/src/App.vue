@@ -8,8 +8,8 @@ const router = useRouter();
   <header>
       <nav>
         <div>
-          <button @click="router.push('/')">Home</button>
-          <button @click="router.push('/design')">Design</button>
+          <button class="p-3 m-3 border-3" @click="router.push('/')">Home</button>
+          <button class="p-3 m-3 border-3" @click="router.push('/design')">Design</button>
           <hr />
         </div>
       </nav>

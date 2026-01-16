@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m-3 font-bold">
     <h2>{{ number }}</h2>
     <h2>{{ number_2 }}</h2>
     <h2>{{ obj_value }}</h2>

@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <h1>Design</h1>
+  <div class="font-bold">
+    <h1 class="m-3 text-yellow-300">Design Pages</h1>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { } from 'vue';
 
 </script>
 

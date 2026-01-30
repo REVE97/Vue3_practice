@@ -8,15 +8,14 @@ const router = useRouter();
   <header>
       <nav>
         <div>
-          <button class="p-3 m-3 border-2 bg-gray-300" @click="router.push('/')">Home</button>
-          <button class="p-3 m-3 border-2 bg-gray-300" @click="router.push('/design')">Design</button>
+          <button @click="router.push('/')">Home</button>
+          <button @click="router.push('/design')">Design</button>
           <hr />
         </div>
       </nav>
   </header>
 
   <RouterView />
-  <hr />
 </template>
 
 <style scoped>

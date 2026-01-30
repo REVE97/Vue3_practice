@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1 style="text-align: center;">ref, reactive</h1>
     <h1>HomePage</h1>
     <h2>{{ number }}</h2>
     <h2>{{ number_2 }}</h2>

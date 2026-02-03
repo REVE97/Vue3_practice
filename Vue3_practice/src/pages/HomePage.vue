@@ -122,7 +122,7 @@
 
   <!-- Test API -->
   <div class="axios_test">
-    <h1 style="text-align: center;">Axios Test</h1>
+    <h1 style="text-align: center;">Axios GET Test</h1>
     <ul>
       <li v-for="item in users" :key="item.id">
         ID : {{ item.id }} /
@@ -131,6 +131,12 @@
         PHONE : {{ item.phone }} /
       </li>
     </ul>
+  </div>
+
+  <div class="axios_test">
+    <h1 style="text-align: center;">Axios POST Test</h1>
+    <button @click="postFetch">POST</button>
+    <p>{{ postUsers_result }}</p>
   </div>
 
 </template>
@@ -151,8 +157,16 @@ const selectedDate = ref(""); // 날짜 선택 상태
 
 const con = ref(""); // 사고 유형 상태
 
-const users = ref([]); // Test API
-const errors = ref(null); // Test API 에러처리
+const users = ref([]); // Axios GET Test 상태
+const errors = ref(null); // Axios GET Test API 상태 에러처리
+
+// Axios POST Test 상태
+const postUsers = ref({
+  userId: 11,
+  title: "ABC",
+  body: "123"
+});
+const postUsers_result = ref(null);
 
 /* 메서드 */
 
@@ -170,6 +184,16 @@ const getFetch = async () => {
   try {
     const res = await axios.get('https://jsonplaceholder.typicode.com/users');
     users.value = res.data;
+  } catch (error) {
+    errors.value = error.message;
+  }
+}
+
+// Axios POST
+const postFetch = async () => {
+  try {
+    const res = await axios.post('https://jsonplaceholder.typicode.com/posts',postUsers.value);
+    postUsers_result.value = res.data;
   } catch (error) {
     errors.value = error.message;
   }

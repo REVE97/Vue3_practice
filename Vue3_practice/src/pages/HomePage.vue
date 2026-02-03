@@ -120,12 +120,26 @@
 
   <hr />
 
+  <!-- Test API -->
+  <div class="axios_test">
+    <h1 style="text-align: center;">Axios Test</h1>
+    <ul>
+      <li v-for="item in users" :key="item.id">
+        ID : {{ item.id }} /
+        NAME : {{ item.name }} / 
+        USERNAME : {{ item.username }} /
+        PHONE : {{ item.phone }} /
+      </li>
+    </ul>
+  </div>
 
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { mock_table } from '../assets/mock' // KATRI 신고 mock 데이터
+import axios from 'axios';
+
 
 /* 상태 관리 */
 const number = ref(10);
@@ -137,6 +151,9 @@ const selectedDate = ref(""); // 날짜 선택 상태
 
 const con = ref(""); // 사고 유형 상태
 
+const users = ref([]); // Test API
+const errors = ref(null); // Test API 에러처리
+
 /* 메서드 */
 
 // ref 상태 변화 메서드
@@ -147,6 +164,18 @@ function cal() {
 // table 태그에 filter 메서드
 const filter_mock = computed(() =>
  mock_table.filter(item => item.status == "승인 대기"));
+
+// Axios GET
+const getFetch = async () => {
+  try {
+    const res = await axios.get('https://jsonplaceholder.typicode.com/users');
+    users.value = res.data;
+  } catch (error) {
+    errors.value = error.message;
+  }
+}
+
+onMounted(getFetch);
 </script>
 
 <style scoped>

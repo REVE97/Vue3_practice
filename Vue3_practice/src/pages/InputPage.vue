@@ -29,12 +29,23 @@
       <input type="radio" name="con" value="정비 요청" v-model="accident.type">정비요청
     </label>
   </div>
+
+  <hr />
+
+  <div class="Time">
+    <h1 style="text-align: center;">Time</h1>
+    <label>
+        시간선택&nbsp;<input type="time" v-model="time">
+    </label>
+  </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from 'vue';
 
 const selectedDate = ref(""); // 날짜 선택 상태
+
+const time = ref("");
 
 const accident = reactive({ 
   type:"",

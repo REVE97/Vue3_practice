@@ -1,26 +1,23 @@
-<script setup>
-import { RouterView, useRouter } from 'vue-router'
-
-const router = useRouter();
-</script>
-
 <template>
-  <header>
       <nav>
-        <div>
           <button @click="router.push('/')">Home</button>
-          <button @click="router.push('/design')">Design</button>
+          <button @click="router.push('/table')">Table</button>
+          <button @click="router.push('/select')">Select</button>
+          <button @click="router.push('/input')">Input</button>
+          <button @click="router.push('/axios')">Axios</button>
           <hr />
-        </div>
       </nav>
-  </header>
-
   <RouterView />
 </template>
 
+<script setup>
+import { RouterView, useRouter } from 'vue-router'
+  
+const router = useRouter();
+</script>
+
 <style scoped>
-/* 밑줄 제거 */
-a {
-  text-decoration: none;
+button {
+  margin: 3px;
 }
 </style>

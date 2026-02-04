@@ -19,14 +19,14 @@
     <label>
       <input type="radio" name="con" value="안전 사고" v-model="accident.type">안전사고
     </label>
-    <input type="text" placeholder="ex)차종" v-model="accident.remark">
+    <input type="text" v-if="accident.type === '안전 사고'" placeholder="ex)차종" v-model="accident.remark">
 
     <label>
-      <input type="radio" name="con" value="사고 조사" v-model="con">사고조사
+      <input type="radio" name="con" value="사고 조사" v-model="accident.type">사고조사
     </label>
 
     <label>
-      <input type="radio" name="con" value="정비 요청" v-model="con">정비요청
+      <input type="radio" name="con" value="정비 요청" v-model="accident.type">정비요청
     </label>
   </div>
 </template>

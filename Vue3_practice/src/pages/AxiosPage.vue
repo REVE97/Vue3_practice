@@ -15,6 +15,16 @@
       </li>
     </ul>
 
+    <h1 style="text-align: center;">Axios GET Params Test</h1>
+    <ul>
+        <li v-for="(item,idx) in users_para" :key="idx">
+            ID : {{ item.id }} /
+            NAME : {{ item.name }} / 
+            USERNAME : {{ item.username }} /
+            PHONE : {{ item.phone }} /
+        </li>
+    </ul>
+
     <h1 style="text-align: center;">Axios POST Test</h1>
     <button @click="postFetch">POST</button>
     <p>{{ postUsers_result }}</p>
@@ -28,6 +38,8 @@ import axios from 'axios';
 
 const users = ref([]); // Axios GET Test 상태
 const errors = ref(null); // Axios GET Test API 상태 에러처리
+
+const users_para = ref([]);
 
 // Axios POST Test 상태
 const postUsers = ref({
@@ -47,6 +59,16 @@ const getFetch = async () => {
   }
 }
 
+// params 값 넣어서 GET
+const getFetch_para = async () => {
+    try {
+        const res = await axios.get('https://jsonplaceholder.typicode.com/users',{ params: { id : 3 }})
+        users_para.value = res.data;
+    } catch (error) {
+        errors.value = error.response.status
+    }
+}
+
 // Axios POST
 const postFetch = async () => {
   try {
@@ -57,7 +79,10 @@ const postFetch = async () => {
   }
 }
 
-onMounted(getFetch);
+onMounted(() => {
+    getFetch();
+    getFetch_para();
+});
 
 </script>
 

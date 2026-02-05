@@ -9,6 +9,7 @@
   <div class="date">
     <h1 style="text-align: center;">Date</h1>
     <input type="date" min="2025-01-01" max="2026-01-01" v-model="selectedDate"/>
+    <h3>{{ selectedDate }}</h3>
   </div>
 
   <hr />
@@ -37,6 +38,7 @@
     <label>
         시간선택&nbsp;<input type="time" v-model="time">
     </label>
+    <h3>{{ time }}</h3>
   </div>
 </template>
 

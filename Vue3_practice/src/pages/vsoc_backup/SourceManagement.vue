@@ -95,7 +95,7 @@ const all_getFetch_source = async () => {
 }
 
 const filteredData = computed(() => {
-    return allData.value.filter(item => {
+    return sortedData.value.filter(item => {
         const matchSourceId = !userInputSourceId.value || item.sourceId === userInputSourceId.value;
         const matchCategory = !userInputCategory.value || item.sourceId === userInputCategory.value;
         const matchFrequency = userInputFrequency.value === "전체" || !userInputFrequency.value || item.sourceId === userInputFrequency.value;
@@ -106,12 +106,30 @@ const filteredData = computed(() => {
 })
 
 const display = computed(() => {
-    return searchStatus.value ? filteredData.value : allData.value;
+    return searchStatus.value ? filteredData.value : sortedData.value;
 })
 
 const onSearch = () => {
     searchStatus.value = true;
 }
+
+
+const parseCreatedAt = (s) => {
+  if (!s) return new Date(0);
+
+  const iso = s
+    .replace(" ", "T")
+    .replace(/(\.\d{3})\d+$/, "$1"); 
+
+  const d = new Date(iso);
+  return isNaN(d) ? new Date(0) : d;
+};
+
+const sortedData = computed(() => {
+  return [...allData.value].sort(
+    (a, b) => parseCreatedAt(b.createdAt) - parseCreatedAt(a.createdAt)
+  );
+});
 
 onMounted(all_getFetch_source);
 </script>

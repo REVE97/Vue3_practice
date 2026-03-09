@@ -18,6 +18,8 @@
         </div>
     </div>
   </teleport>
+
+  <OtaModal v-show="isModalVisible"></OtaModal>
 </template>
 
 <script setup>
@@ -30,6 +32,14 @@ defineProps({
         default: () => [],
     }
 });
+
+const store = useAppStore();
+const modalInfo = computed(() => store.modalInfo);
+const loadingInfo = computed(() => store.loadingInfo);
+
+const isModalVisible = computed(
+    () => modalInfo.value.on || loadingInfo.value.on
+);
 
 </script>
 

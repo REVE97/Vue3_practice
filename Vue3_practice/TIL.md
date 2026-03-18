@@ -255,6 +255,72 @@ const state = reactive({
 1. 네트워크 오류, 400번대 오류, 500번대 오류, CORS 오류 -> catch문 호출
 2. API 서버 오류, resultCode === -1 -> catch문 호출 x
 
+### DOM(Document Object Model)
+>브라우저가 `HTML` 문서를 객체 형태로 표현한 구조 = **HTML 형식을 JavaScript 으로 조작 가능한 객체 구조**로 변환
+
+<예시 코드>
+```
+<body>
+  <div id="app">
+    <h1>Hello</h1>
+    <button>Click</button>
+  </div>
+</body>
+```
+```
+<DOM Tree>
+Document
+ └─ body
+     └─ div#app
+         ├─ h1
+         └─ button
+```
+
+```
+Vue state 변경
+      ↓
+Virtual DOM 변경
+      ↓
+Diff 알고리즘
+      ↓
+Real DOM 업데이트
+```
+
+### Hook
+>Vue 에서 **특정 시점에 실행되는 함수**
+
+- ex) `setup()` , `OnMounted`, `OnUnMounted`
+
+
+### Vue 생명주기
+>어떤 시점에 어떤 코드를 실행해야 하는지 결정하는데 사용
+
+```
+컴포넌트 생성
+→ 화면에 붙기 전
+→ 화면에 붙음
+→ 데이터 변경으로 다시 그림
+→ 화면에서 제거됨
+```
+
+```
+생성 → setup
+
+붙기 전 → onBeforeMount
+
+붙은 후 → onMounted
+
+수정 전 → onBeforeUpdate
+
+수정 후 → onUpdated
+
+제거 전 → onBeforeUnmount
+
+제거 후 → onUnmounted
+```
+
+
+
 ## 📘 JavaScript
 
 ### Array Method

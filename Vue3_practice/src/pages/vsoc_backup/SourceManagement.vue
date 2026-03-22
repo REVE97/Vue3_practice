@@ -99,7 +99,7 @@ const filteredData = computed(() => {
         const matchSourceId = !userInputSourceId.value || item.sourceId === userInputSourceId.value;
         const matchCategory = !userInputCategory.value || item.sourceId === userInputCategory.value;
         const matchFrequency = userInputFrequency.value === "전체" || !userInputFrequency.value || item.sourceId === userInputFrequency.value;
-        const matchStatus = userInputStatus === "전체" || !userInputStatus.value || item.sourceId === userInputStatus.value;
+        const matchStatus = userInputStatus === "전체" || !userInputStatus.value || item.status === userInputStatus.value;
 
         return matchSourceId && matchCategory && matchFrequency && matchStatus
     })

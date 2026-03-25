@@ -62,7 +62,7 @@
           </thead>
 
           <tbody>
-            <tr v-for="item in display" :key="item.vin">
+            <tr v-for="item in display" :key="item.id">
               <td>{{ getDate(item.alarmSentDate) }}</td>
               <td>{{ item.dataSource }}</td>
               <td>{{ item.unapprovedInfo }}</td>
@@ -77,11 +77,11 @@
               <td v-else class="checkbox">
                 <input
                   type="checkbox"
-                  :id="`listCheckbox-${item.vin}`"
-                  :value="item.alarmId"
+                  :id="`listCheckbox-${item.id}`"
+                  :value="item.id"
                   v-model="selectedAlarmIds"
                 />
-                <label :for="`listCheckbox-${item.vin}`"></label>
+                <label :for="`listCheckbox-${item.id}`"></label>
               </td>
             </tr>
 
@@ -152,7 +152,7 @@ const isAllChecked = computed(() => {
   return (
     checkableItems.value.length > 0 &&
     checkableItems.value.every((item) =>
-      selectedAlarmIds.value.includes(item.vin)
+      selectedAlarmIds.value.includes(item.id)
     )
   );
 });
@@ -168,16 +168,16 @@ const toggleAllCheckbox = (event) => {
   const checked = event.target.checked;
 
   if (checked) {
-    selectedAlarmIds.value = checkableItems.value.map((item) => item.vin);
+    selectedAlarmIds.value = checkableItems.value.map((item) => item.id);
   } else {
     selectedAlarmIds.value = [];
   }
 };
 
-// 선택된 alarmId에 해당하는 실제 객체 목록
+// 선택된 Id에 해당하는 실제 객체 목록
 const selectedAlarmList = computed(() => {
   return allData.value.filter((item) =>
-    selectedAlarmIds.value.includes(item.vin)
+    selectedAlarmIds.value.includes(item.id)
   );
 });
 
@@ -213,7 +213,7 @@ const postSelectedAlarms = async () => {
   try {
     // 1) id 목록만 보내는 경우
     const payload = {
-      alarmIds: selectedAlarmIds.value,
+      alarmIdList: selectedAlarmIds.value,
     };
 
     await axios.post("http://localhost:9100/api/vsoc/alarms/read", payload);

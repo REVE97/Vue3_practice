@@ -94,12 +94,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 
 const router = useRouter();
-const route = useRoute();
 
 // 대시보드 전체 데이터
 const allData = ref(null);
@@ -145,14 +144,6 @@ const search_on = () => (searchOn.value = true);
 const display = computed(() => {
   return searchOn.value ? filteredData.value : allData.value;
 })
-
-// 모니터링 리포트 삭제 후 대시보드로 돌아올때 대시보드 API 호출
-watch(
-  () => route.fullPath,
-  () => {
-    getfetch_monitoring();
-  }
-)
 
 onMounted(getfetch_monitoring);
 </script>

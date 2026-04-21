@@ -144,10 +144,10 @@
                   </li>
                   <li
                     v-for="(book, idx) in bookInfo.textbookList"
-                    :key="idx"
+                    :key="`${book.file?.key || book.file?.name || 'book'}-${idx}`"
                     :class="{ checkedItem: book.checked }"
-                    @dragover.prevent="handleDragOver(idx)"
-                    @drop="handleDrop(idx)"
+                    @dragover.prevent="handleDragOver(idx, $event)"
+                    @drop.prevent="handleDrop(idx)"
                   >
                     <div class="dragdot" draggable="true" @dragstart="handleDragStart(idx, $event)" @dragend="handleDragEnd">
                       <svg width="24" height="24" viewBox="0 0 24 24" aria-label="drag handle" role="img">
@@ -271,6 +271,47 @@
     </div>
   </div>
   <Loading v-if="isLoading" />
+
+  <div v-if="dragPreviewBook" ref="dragPreviewRef" class="dragPreview">
+    <div class="dragPreview_item">
+      <div class="dragPreview_dragdot">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-label="drag handle" role="img">
+          <circle cx="6" cy="6" r="1" />
+          <circle cx="12" cy="6" r="1" />
+          <circle cx="18" cy="6" r="1" />
+          <circle cx="6" cy="12" r="1" />
+          <circle cx="12" cy="12" r="1" />
+          <circle cx="18" cy="12" r="1" />
+          <circle cx="6" cy="18" r="1" />
+          <circle cx="12" cy="18" r="1" />
+          <circle cx="18" cy="18" r="1" />
+        </svg>
+      </div>
+      <div class="checkbox dragPreview_checkboxWrap">
+        <input type="checkbox" />
+        <label>{{ dragPreviewPageLabel }}</label>
+      </div>
+      <div class="input file dragPreview_fileGroup">
+        <input type="text" readonly="readonly" disabled :value="dragPreviewBook.file?.name || '파일명'" />
+        <label>변경</label>
+        <button class="delete" type="button">삭제</button>
+      </div>
+      <div class="input file dragPreview_fileGroup">
+        <input
+          type="text"
+          readonly="readonly"
+          disabled
+          :value="dragPreviewBook.audio ? dragPreviewBook.audio.name : '음성 파일 없음'"
+        />
+        <label>음성</label>
+        <button class="delete" type="button">삭제</button>
+      </div>
+      <div class="button dragPreview_button">
+        <button class="line" type="button">▲</button>
+        <button class="line" type="button">▽</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -313,6 +354,9 @@ export default {
       bgmInputRefs: [],
       dragFromIdx: null,
       dragOverIdx: null,
+      dragGhostEl: null,
+      dragPreviewBook: null,
+      dragPreviewPageLabel: '',
     };
   },
   async mounted() {
@@ -581,32 +625,61 @@ export default {
     changeOrderBookList(from, order) {
       this.$store.commit('book/changeOrderBookList', { from, order });
     },
-    handleDragStart(idx, e) {
+    async handleDragStart(idx, e) {
       this.dragFromIdx = idx;
       this.dragOverIdx = idx;
+      this.dragPreviewBook = this.bookInfo.textbookList[idx];
+      this.dragPreviewPageLabel = `${idx + 1}P`;
 
-      // 크롬에서는 setData 없어도 작동하나 다른 브라우저에서는 오류 발생 가능성이 있어 추가
       if (e.dataTransfer) {
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.dropEffect = 'move';
         e.dataTransfer.setData('text/plain', String(idx));
+
+        await this.$nextTick();
+
+        const previewEl = this.$refs.dragPreviewRef;
+        const listItem = e.currentTarget?.closest('li');
+
+        if (previewEl && listItem) {
+          previewEl.style.width = `${listItem.offsetWidth}px`;
+          this.dragGhostEl = previewEl;
+          e.dataTransfer.setDragImage(previewEl, 24, 24);
+        }
       }
     },
-    handleDragOver(idx) {
-      this.dragOverIdx = idx;
-    },
-    handleDrop(dropIdx) {
-      if (this.dragFromIdx === null || this.dragFromIdx === dropIdx) {
-        this.handleDragEnd();
+    handleDragOver(idx, e) {
+      if (this.dragFromIdx === null || this.dragFromIdx === idx) {
+        this.dragOverIdx = idx;
         return;
       }
-  
-      this.moveBookByDrag(this.dragFromIdx, dropIdx);
+
+      const currentTarget = e.currentTarget;
+      const rect = currentTarget.getBoundingClientRect();
+      const offsetY = e.clientY - rect.top;
+      const insertAfter = offsetY > rect.height / 2;
+      const targetIdx = insertAfter ? idx + 1 : idx;
+      const normalizedTargetIdx = Math.max(0, Math.min(targetIdx, this.bookInfo.textbookList.length - 1));
+
+      if (normalizedTargetIdx === this.dragFromIdx) {
+        this.dragOverIdx = idx;
+        return;
+      }
+
+      this.moveBookByDrag(this.dragFromIdx, normalizedTargetIdx);
+      this.dragFromIdx = normalizedTargetIdx;
+      this.dragOverIdx = normalizedTargetIdx;
+    },
+    handleDrop(dropIdx) {
+      this.dragOverIdx = dropIdx;
       this.handleDragEnd();
     },
     handleDragEnd() {
       this.dragFromIdx = null;
       this.dragOverIdx = null;
+      this.dragPreviewBook = null;
+      this.dragPreviewPageLabel = '';
+      this.dragGhostEl = null;
     },
     moveBookByDrag(from, to) {
       if (from < to) {
@@ -719,7 +792,76 @@ export default {
   background-color: #E3F2FF;
   border-radius: 4px;
 }
-.contentBox .content .table li + li {
-  margin-top: 0px;
+.contentBox .content .table li {
+  margin: 0px;
+  padding: 6px 8px;
+}
+li:has(#checkboxAll) {
+  margin-left: 32px;
+}
+.dragPreview {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  z-index: 9999;
+  pointer-events: none;
+}
+.dragPreview * {
+  box-sizing: border-box;
+}
+.dragPreview_item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+.dragPreview_dragedot {
+  width: 24px;
+  height: 24px;
+}
+.dragPreview_fileGroup {
+  flex: 1;
+  margin-left: 16px;
+}
+.dragPreview_fileGroup input[type='text'] {
+  flex: 1;
+  min-width: auto;
+  margin-right: 8px;
+}
+.dragPreview_fileGroup label {
+  width: auto;
+  height: auto;
+  padding: 5px 8px;
+  line-height: normal;
+  font-size: 14px;
+  color: var(--main-color);
+  border: 1px solid var(--main-color);
+  background-color: #fff;
+  cursor: default;
+}
+.dragPreview_fileGroup .delete {
+  width: auto;
+  height: auto;
+  padding: 5px 8px;
+  line-height: normal;
+  font-size: 14px;
+  color: var(--close-color);
+  border: 1px solid var(--close-color);
+  background-color: #fff;
+  cursor: default;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+.dragPreview_button {
+  margin-left: 16px;
+}
+.dragPreview_button button {
+  color: var(--main-color);
+  border: 1px solid var(--main-color);
+  border-radius: 4px;
+  background-color: #fff;
+  padding: 4px 7px;
 }
 </style>

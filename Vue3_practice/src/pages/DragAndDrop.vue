@@ -771,7 +771,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .book-cancel {
   margin-left: 8px;

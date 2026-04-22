@@ -22,7 +22,3 @@ const goList = () => {
 }
 
 </script>
-
-<style scoped>
-
-</style>
